@@ -1,0 +1,77 @@
+import pyttsx3
+import speech_recognition as sr
+import datetime
+import webbrowser
+import wikipedia
+import os
+import calendar
+import smtplib
+
+
+engine=pyttsx3.init('sapi5')
+voices=engine.getProperty('voices')
+engine.setProperty(voices,voices[0].id)
+
+def speak(audio):
+    engine.say(audio)
+    engine.runAndWait()
+    
+
+def WishMe():
+    hour= int(datetime.datetime.now().hour)
+    if hour>0 and hour <12:
+        speak("i am jarvis")
+        speak("good morning how can i help u")
+        print("good morning boss how can i help u")
+    
+    elif hour>12 and hour<18:
+        speak("i am jarvis ")
+        speak("good afternoon bosss")
+        speak("how can i help u")
+        print("good afternoon boss how can i help u")
+    else:
+        speak("i am jarvis sir")
+        speak("hey boss how can i help you")
+        print("hey boss how cann i help")
+        
+def takeCommand():
+    r=sr.Recognizer()
+    with sr.Microphone() as source:
+        print("listening")
+        r.pause_threshold=1
+        audio=r.listen(source)
+    try:
+        print("recognising")
+        query=r.recognize_google(audio,language='en-in')
+        print(f"user said : {query}\n")
+    except Exception as e:
+        print("sorry for the inconvinience, can you please say it again")
+        return "none"
+    return query
+
+if __name__=="__main__":
+    WishMe()
+    while True:
+        query= takeCommand().lower()
+        
+        if 'wikipedia' in query:
+            speak("searching wikipedia boss")
+            query=query.replace("wikipedia","")
+            result=wikipedia.summary(query, sentences=4)
+            speak("boss, according to wikipedia")
+            print(result)
+            speak(result)
+        elif 'youtube' in query:
+            webbrowser.open("www.youtube.com")
+            
+        elif 'google' in query:
+            webbrowser.open("ww.google.com")
+            
+        elif 'time' in query:
+            strTime=datetime.datetime.now().strftime("%H:%M:%S")
+            print(f"the time is {strTime}")
+            speak(f"the time is {strTime}")
+
+        elif 'thank you' in query:
+                  speak(' thats my pleasure boss')
+              
